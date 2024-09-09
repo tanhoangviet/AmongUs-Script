@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Page</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+        #toolbar { background-color: black; color: white; padding: 10px; display: flex; justify-content: space-between; align-items: center; }
+        #toolbar h1 { margin: 0; font-size: 24px; }
+        #toolbar img { width: 24px; height: 24px; cursor: pointer; }
+        .floating-btn { position: fixed; bottom: 20px; right: 20px; background-color: #007bff; color: white; border-radius: 50%; width: 50px; height: 50px; display: flex; justify-content: center; align-items: center; font-size: 30px; text-decoration: none; }
+        #content { padding: 20px; overflow-y: auto; max-height: calc(100vh - 50px); } /* Scroll support */
+        .frame { border: 1px solid #ccc; padding: 15px; margin-top: 10px; position: relative; }
+        .frame-options { display: none; position: absolute; top: 10px; right: 10px; background-color: white; border: 1px solid #ccc; border-radius: 5px; padding: 5px; }
+        .frame-options button { background: none; border: none; cursor: pointer; padding: 5px; }
+        .frame-options button:hover { background-color: #f0f0f0; }
+        .scrollable { overflow-y: scroll; }
+    </style>
+</head>
+<body>
+
+    <div id="toolbar">
+        <h1>Hello</h1>
+        <img src="data:image/png;base64,..." alt="Settings">
+    </div>
+
+    <div id="content"></div>
+
+    <a href="create.html" class="floating-btn">+</a>
+
+    <script>
+        let frames = JSON.parse(localStorage.getItem('frames')) || [];
+        const contentDiv = document.getElementById('content');
+
+        function createFrame(title, code, index) {
+            const frame = document.createElement('div');
+            frame.classList.add('frame');
+            frame.innerHTML = `
+                <h2>${title}</h2>
+                <p>${code}</p>
+                <div class="frame-options">
+                    <button onclick="editFrame(${index})">✏️ Edit</button>
+                    <button onclick="viewFrame(${index})">👁️ View</button>
+                    <button onclick="deleteFrame(${index})">🗑️ Delete</button>
+                </div>
+            `;
+            
+            frame.addEventListener('touchstart', handleLongPress.bind(null, frame));
+            contentDiv.appendChild(frame);
+        }
+
+        function handleLongPress(frame) {
+            let pressTimer;
+            frame.addEventListener('touchstart', () => {
+                pressTimer = setTimeout(() => {
+                    const options = frame.querySelector('.frame-options');
+                    options.style.display = 'block';
+                }, 500); // 0.5 seconds
+            });
+            frame.addEventListener('touchend', () => {
+                clearTimeout(pressTimer);
+            });
+        }
+
+        function editFrame(index) {
+            const frameData = frames[index];
+            localStorage.setItem('editFrame', JSON.stringify(frameData));
+            window.location.href = 'edit.html';
+        }
+
+        function viewFrame(index) {
+            localStorage.setItem('viewFrame', JSON.stringify(frames[index]));
+            window.location.href = 'view.html';
+        }
+
+        function deleteFrame(index) {
+            frames.splice(index, 1);
+            localStorage.setItem('frames', JSON.stringify(frames));
+            location.reload(); // Refresh to reflect the deletion
+        }
+
+        // Load frames on page load
+        frames.forEach((frame, index) => createFrame(frame.title, frame.code, index));
+
+        // Hide options when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.frame-options') && !e.target.closest('.frame')) {
+                document.querySelectorAll('.frame-options').forEach(el => el.style.display = 'none');
+            }
+        });
+    </script>
+
+</body>
+</html>
