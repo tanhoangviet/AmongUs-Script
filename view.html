@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Page</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .frame { border: 1px solid #ccc; padding: 15px; }
+    </style>
+</head>
+<body>
+
+    <div class="frame">
+        <h2 id="title"></h2>
+        <p id="code"></p>
+    </div>
+
+    <script>
+        const data = JSON.parse(localStorage.getItem('data'));
+        if (data) {
+            document.getElementById('title').innerText = data.title;
+            document.getElementById('code').innerText = data.code;
+        }
+    </script>
+
+</body>
+</html>
