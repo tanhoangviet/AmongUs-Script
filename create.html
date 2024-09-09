@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Script</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
+        .form-group { margin-bottom: 20px; }
+        label { font-weight: bold; display: block; margin-bottom: 5px; }
+        input, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
+        button { padding: 10px 15px; background-color: #007bff; color: white; border: none; cursor: pointer; border-radius: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>New Code Frame</h1>
+
+    <div class="form-group">
+        <label for="title">Title</label>
+        <input type="text" id="title" placeholder="Enter frame title" required>
+    </div>
+
+    <div class="form-group">
+        <label for="code">Code</label>
+        <textarea id="code" rows="5" placeholder="Enter code" required></textarea>
+    </div>
+
+    <button onclick="saveFrame()">Create</button>
+
+    <script>
+        function saveFrame() {
+            const title = document.getElementById('title').value;
+            const code = document.getElementById('code').value;
+
+            if (title && code) {
+                let frames = JSON.parse(localStorage.getItem('frames')) || [];
+                frames.push({ title, code });
+                localStorage.setItem('frames', JSON.stringify(frames));
+                window.location.href = 'index.html';
+            } else {
+                alert('Please fill out both fields.');
+            }
+        }
+    </script>
+
+</body>
+</html>
